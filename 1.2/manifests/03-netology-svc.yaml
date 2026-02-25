@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: netology-svc
+  namespace: default
+  labels:
+    app: netology-svc
+    homework: "1.2"
+    task: "service-creation"
+spec:
+  selector:
+    app: netology-web
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+    name: http
+  type: ClusterIP
