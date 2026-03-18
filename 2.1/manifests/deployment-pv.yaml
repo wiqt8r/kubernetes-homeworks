@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-exchange-pv
+  namespace: default
+  labels:
+    app: data-exchange-pv
+    homework: "2.1"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-exchange-pv
+  template:
+    metadata:
+      labels:
+        app: data-exchange-pv
+    spec:
+      volumes:
+      - name: persistent-storage
+        persistentVolumeClaim:
+          claimName: local-pvc
+      containers:
+      - name: busybox-writer
+        image: busybox:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            while true; do
+              echo "Data from busybox at $(date)" >> /data/persistent-file.txt
+              sleep 5
+            done
+        volumeMounts:
+        - name: persistent-storage
+          mountPath: /data
+      - name: multitool-reader
+        image: wbitt/network-multitool
+        env:
+        - name: HTTP_PORT
+          value: "1180"
+        ports:
+        - containerPort: 1180
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            tail -f /data/persistent-file.txt
+        volumeMounts:
+        - name: persistent-storage
+          mountPath: /data
