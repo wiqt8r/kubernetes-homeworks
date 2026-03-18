@@ -5,7 +5,6 @@ metadata:
   namespace: default
   labels:
     homework: "2.1"
-  # Важно: НЕ добавляем аннотации, которые вызывают провижинер
 spec:
   accessModes:
     - ReadWriteOnce
